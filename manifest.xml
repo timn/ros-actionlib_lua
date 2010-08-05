@@ -1,0 +1,11 @@
+<package>
+  <description brief="actionlib_lua">
+    Lua modules to deal with actionlib.
+  </description>
+  <author>Tim Niemueller</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/actionlib_lua</url>
+  <depend package="roslua"/>
+  <depend package="actionlib"/>
+</package>
