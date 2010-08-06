@@ -7,5 +7,5 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/actionlib_lua</url>
   <depend package="roslua"/>
-  <depend package="actionlib"/>
+  <depend package="actionlib_msgs"/>
 </package>
