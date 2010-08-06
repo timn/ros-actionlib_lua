@@ -19,3 +19,8 @@ module("actionlib_lua", package.seeall)
 require("roslua.action_spec")
 
 get_actionspec = actionlib_lua.action_spec.get_actionspec
+
+
+function action_client(name, type)
+
+end

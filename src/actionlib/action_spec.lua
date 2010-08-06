@@ -1,8 +1,8 @@
 
 ----------------------------------------------------------------------------
---  srv_spec.lua - Service specification wrapper
+--  action_spec.lua - Action specification wrapper
 --
---  Created: Thu Jul 29 11:04:13 2010 (at Intel Research, Pittsburgh)
+--  Created: Fri Aug 06 11:41:07 2010 (at Intel Research, Pittsburgh)
 --  Copyright  2010  Tim Niemueller [www.niemueller.de]
 --
 ----------------------------------------------------------------------------
@@ -74,7 +74,7 @@ function ActionSpec:load_from_iterator(iterator)
    self.fields = {}
    self.constants = {}
 
-   local messages = {}
+   local messages = {"", "", ""}
    local msgidx = 1
 
    -- extract the request and response message descriptions
@@ -86,12 +86,35 @@ function ActionSpec:load_from_iterator(iterator)
       end
    end
 
-   self.goalspec  = MsgSpec:new{type=self.type .. "_Goal",
-				specstr = messages[1]}
-   self.resultspec = MsgSpec:new{type=self.type .. "_Result",
-				 specstr = messages[2]}
-   self.feedbackspec = MsgSpec:new{type=self.type .. "_Feedback",
-				   specstr = messages[3]}
+   local action_specstr = string.format("%sActionGoal action_goal\n"..
+					"%sActionResult action_result\n"..
+					"%sActionFeedback action_feedback\n",
+				        self.type, self.type, self.type)
+
+   local act_goal_specstr = string.format("Header header\n" ..
+					  "actionlib_msgs/GoalID goal_id\n" ..
+					  "%sGoal goal\n", self.type)
+
+   local act_feedb_specstr = string.format("Header header\n" ..
+					   "actionlib_msgs/GoalStatus status\n" ..
+					   "%sFeedback feedback\n", self.type)
+
+   local act_res_specstr = string.format("Header header\n" ..
+					 "actionlib_msgs/GoalStatus status\n" ..
+					 "%sResult result\n", self.type)
+
+   self.action_spec   = roslua.get_msgspec(self.type .. "Action", action_specstr);
+   self.goal_spec     = roslua.get_msgspec(self.type .. "Goal", messages[1]);
+   self.result_spec   = roslua.get_msgspec(self.type .. "Result", messages[2]);
+   self.feedback_spec = roslua.get_msgspec(self.type .. "Feedback", messages[3]);
+
+   self.act_goal_spec  =
+      roslua.get_msgspec(self.type .. "ActionGoal", act_goal_specstr);
+   self.act_feedback_spec =
+      roslua.get_msgspec(self.type .. "ActionFeedback", act_feedb_specstr);
+   self.act_result_spec =
+      roslua.get_msgspec(self.type .. "ActionResult", act_res_specstr);
+
 end
 
 --- Load specification from string.
@@ -115,9 +138,10 @@ end
 function ActionSpec:print()
    print("Action " .. self.type)
    print("Messages:")
-   self.goalspec:print("  ")
-   print()
-   self.resultspec:print("  ")
-   print()
-   self.feedbackspec:print("  ")
+   print("\n*** GOAL")
+   self.act_goal_spec:print("  ")
+   print("\n*** RESULT")
+   self.act_result_spec:print("  ")
+   print("\n*** FEEDBACK")
+   self.act_feedback_spec:print("  ")
 end
