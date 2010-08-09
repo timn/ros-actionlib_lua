@@ -13,14 +13,14 @@
 -- This module contains the ActionSpec class to read and represent ROS action
 -- specification (YAML files). Action specifications should be obtained by
 -- using the <code>get_actionspec()</code> function, which is aliased for
--- convenience as <code>actionlib_lua.get_actionspec()</code>.
+-- convenience as <code>actionlib.get_actionspec()</code>.
 -- <br /><br />
 -- The service files are read on the fly, no offline code generation is
 -- necessary. This avoids the need to write yet another code generator. After
 -- reading the service specifications contains three fields, the ...
 -- @copyright Tim Niemueller, Carnegie Mellon University, Intel Research Pittsburgh
 -- @release Released under BSD license
-module("actionlib_lua.action_spec", package.seeall)
+module("actionlib.action_spec", package.seeall)
 
 require("roslua.msg_spec")
 

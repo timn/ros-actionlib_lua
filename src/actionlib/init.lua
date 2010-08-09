@@ -1,6 +1,6 @@
 
 ----------------------------------------------------------------------------
---  init.lua - base file for actionlib_lua library
+--  init.lua - base file for actionlib library
 --
 --  Created: Thu Aug 05 17:56:25 2010 (at Intel Research, Pittsburgh)
 --  Copyright  2010  Tim Niemueller [www.niemueller.de]
@@ -14,7 +14,7 @@
 -- withing Lua.
 -- @copyright Tim Niemueller, Carnegie Mellon University, Intel Research Pittsburgh
 -- @release Released under BSD license
-module("actionlib_lua", package.seeall)
+module("actionlib", package.seeall)
 
 require("roslua.action_spec")
 

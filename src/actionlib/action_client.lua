@@ -16,12 +16,12 @@
 -- <br /><br />
 -- @copyright Tim Niemueller, Carnegie Mellon University, Intel Research Pittsburgh
 -- @release Released under BSD license
-module("actionlib_lua.action_client", package.seeall)
+module("actionlib.action_client", package.seeall)
 
 require("roslua")
-require("actionlib_lua.action_spec")
+require("actionlib.action_spec")
 
-local ActionSpec = actionlib_lua.action_spec.ActionSpec
+local ActionSpec = actionlib.action_spec.ActionSpec
 
 
 GoalHandle = { WAIT_GOAL_ACK = 0,
