@@ -10,7 +10,7 @@
 -- Licensed under BSD license
 
 require("roslua")
-require("actionlib.action_spec")
+require("actionlib")
 
 roslua.init_node{master_uri=os.getenv("ROS_MASTER_URI"), node_name="actionspectest"}
 
@@ -18,6 +18,6 @@ print()
 print("Action spec tests")
 
 print()
-local actionspec = actionlib_lua.action_spec.get_actionspec("object_manipulation_msgs/Place")
+local actionspec = actionlib.get_actionspec("object_manipulation_msgs/Place")
 actionspec:print()
 

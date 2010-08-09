@@ -16,11 +16,12 @@
 -- @release Released under BSD license
 module("actionlib", package.seeall)
 
-require("roslua.action_spec")
+require("actionlib.action_spec")
+require("actionlib.action_client")
 
-get_actionspec = actionlib_lua.action_spec.get_actionspec
-
+get_actionspec = actionlib.action_spec.get_actionspec
+ActionClient   = actionlib.action_client.ActionClient
 
 function action_client(name, type)
-
+   return ActionClient:new{name=name, type=type}
 end
