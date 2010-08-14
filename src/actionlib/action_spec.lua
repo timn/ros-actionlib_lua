@@ -63,7 +63,19 @@ function ActionSpec:new(o)
       o.short_type = o.type:sub(slashpos + 1)
    end
 
+   o.action_spec       = roslua.get_msgspec(o.type .. "Action")
+   o.goal_spec         = roslua.get_msgspec(o.type .. "Goal")
+   o.result_spec       = roslua.get_msgspec(o.type .. "Result")
+   o.feedback_spec     = roslua.get_msgspec(o.type .. "Feedback")
+
+   o.act_goal_spec     = roslua.get_msgspec(o.type .. "ActionGoal")
+   o.act_feedback_spec = roslua.get_msgspec(o.type .. "ActionFeedback")
+   o.act_result_spec   = roslua.get_msgspec(o.type .. "ActionResult")
+
+   --[[ This code could be used to create messages directly from .action files,
+   but since the msgs are built as files anyway, it's safer to just read them
    o:load()
+   --]]
 
    return o
 end
