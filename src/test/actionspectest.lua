@@ -18,6 +18,6 @@ print()
 print("Action spec tests")
 
 print()
-local actionspec = actionlib.get_actionspec("object_manipulation_msgs/Place")
+local actionspec = actionlib.get_actionspec("actionlib/Test")
 actionspec:print()
 
