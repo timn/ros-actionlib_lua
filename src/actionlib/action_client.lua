@@ -48,6 +48,7 @@ function GoalHandle:new(o)
    o.state = GoalHandle.WAIT_GOAL_ACK
    o.status = -1
    o.listeners = {}
+   o.last_state = -1
 
    return o
 end
@@ -56,15 +57,20 @@ function GoalHandle:update_status(status)
    if status == self.goalstatspec.constants.PENDING.value then
       self.state = self.PENDING
    elseif status == self.goalstatspec.constants.ACTIVE.value then
-      self.state = self.ACTIVE
-   elseif status == self.goalstatspec.constants.SUCCEEDED.value or
-          status == self.goalstatspec.constants.ABORTED.value   or
-          status == self.goalstatspec.constants.REJECTED.value  or
-          status == self.goalstatspec.constants.RECALLED.value  or
-          status == self.goalstatspec.constants.PREEMPTED.value then
+      if not self:terminal() then
+	 self.state = self.ACTIVE
+      end
+   elseif status == self.goalstatspec.constants.SUCCEEDED.value then
       if self.result == nil then -- result can come in faster than status
 	 self.state = self.WAIT_RESULT
+      else
+	 self.state = self.SUCCEEDED
       end
+   elseif status == self.goalstatspec.constants.ABORTED.value   or
+      status == self.goalstatspec.constants.REJECTED.value  or
+      status == self.goalstatspec.constants.RECALLED.value  or
+      status == self.goalstatspec.constants.PREEMPTED.value then
+      self.state = FAILED
    elseif status == self.goalstatspec.constants.PREEMPTING.value then
       self.state = self.PREEMPTING
    elseif status == self.goalstatspec.constants.RECALLING.value then
@@ -103,7 +109,12 @@ function GoalHandle:set_result(result)
    end
 end
 
+function GoalHandle:terminal()
+   return self:cancelled() or self:failed() or self:succeeded() or self:preempted()
+end
+
 function GoalHandle:cancelled()
+   return self.state == self.CANCELED
 end
 
 function GoalHandle:failed()
@@ -112,6 +123,10 @@ end
 
 function GoalHandle:succeeded()
    return self.state == self.SUCCEEDED
+end
+
+function GoalHandle:preempted()
+   return self.state == self.PREEMPTED
 end
 
 function GoalHandle:running()
@@ -149,8 +164,11 @@ function GoalHandle:set_feedback(feedback)
 end
 
 function GoalHandle:notify_listeners()
-   for _, l in pairs(self.listeners) do
-      l(self)
+   if self.last_state ~= self.state then
+      self.last_state = self.state
+      for _, l in pairs(self.listeners) do
+	 l(self)
+      end
    end
 end
 
@@ -193,7 +211,7 @@ function ActionClient:new(o)
    o.goals = {}
    o.next_goal_id = 1
 
-   roslua.add_spinner(function () o:spin() end)
+   --roslua.add_spinner(function () o:spin() end)
 
    return o
 end
@@ -210,6 +228,7 @@ end
 
 function ActionClient:status_received(message)
    -- parse state, update all goal handles and update listeners
+   --printf("Received %d stati", #message.values.status_list)
    for _, g in ipairs(message.values.status_list) do
       local status = g.values.status
       local goal_id = g.values.goal_id.values.id
@@ -222,6 +241,8 @@ function ActionClient:status_received(message)
 end
 
 function ActionClient:result_received(message)
+   self.received_result = true
+   self.result = message
    local goal_id = message.values.status.values.goal_id.values.id
    if self.goals[goal_id] then
       self.goals[goal_id]:set_result(message)
@@ -239,7 +260,7 @@ end
 
 
 function ActionClient:finalize()
-   roslua.remove_spinner(self)
+   --roslua.remove_spinner(self)
 end
 
 
@@ -265,10 +286,18 @@ function ActionClient:wait_for_server()
    end
 end
 
+function ActionClient:wait_for_result()
+   self.received_result = false
+   while not self.received_result do
+      roslua.spin()
+   end
+end
+
 function ActionClient:generate_goal_id()
    local goal_id = self.next_goal_id
    self.next_goal_id = self.next_goal_id + 1
-   return string.format("%s-%i-%i", roslua.node_name, goal_id, os.time())
+   local now = roslua.Time.now()
+   return string.format("%s-%i-%i.%i", roslua.node_name, goal_id, now.sec, now.nsec)
 end
 
 function ActionClient:send_goal(goal, listener)
@@ -285,6 +314,7 @@ function ActionClient:send_goal(goal, listener)
    actgoal.values.goal = goal
    self.pub_goal:publish(actgoal)
    self.goals[goal_id] = handle
+   return goal_id
 end
 
 function ActionClient:cancel_all_goals()
