@@ -25,6 +25,8 @@
 -- as soon as possible. For lengthy actions this means that you cannot run
 -- a continuous method for your action, as you possibly would with roscpp
 -- or rospy! Lua coroutines might be useful to meet this requirement.
+-- The spin callback is optional in the case of short-duration actions.
+-- In this case you must send the result in the goal callback!
 -- Optionally a cancel callback can be given, which is called when a goal
 -- is canceled. It could be used for example for safely stopping a goal.
 -- After a goal has been canceled the spin function is no longer called for
@@ -158,7 +160,7 @@ ActionServer = {}
 -- name namespace for topics
 -- type type of action with the string representation of the action name.
 -- goal_cb goal callback
--- spin_cb spin callback
+-- spin_cb spin callback (optional)
 -- cancel_cb cancel callback (optional)
 function ActionServer:new(o)
    setmetatable(o, self)
@@ -167,9 +169,8 @@ function ActionServer:new(o)
    assert(o.name, "Action name is missing")
    assert(o.type, "Action type is missing")
    assert(o.goal_cb, "Goal handler is missing")
-   assert(o.spin_cb, "Spin function is missing")
    assert(type(o.goal_cb) == "function", "Goal handler is not a function")
-   assert(type(o.spin_cb) == "function", "Spin is not a function")
+   assert(not o.spin_cb or type(o.spin_cb) == "function", "Spin is not a function")
    assert(not o.cancel_cb or type(o.cancel_cb) == "function", "Cancel handler is not a function")
 
    o.actspec       = actionlib.action_spec.get_actionspec(o.type)
@@ -361,7 +362,9 @@ function ActionServer:spin_goals()
    for goal_id, gh in pairs(self.goals) do
       if gh:is_active() then
 	 gh:update_expiration()
-	 self.spin_cb(gh, self)
+	 if self.spin_cb then
+	    self.spin_cb(gh, self)
+	 end
       end
    end
 end
