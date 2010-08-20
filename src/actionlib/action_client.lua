@@ -335,6 +335,22 @@ function ActionClient:process_feedback(message)
    end
 end
 
+--- Check if there is a server for this action client.
+-- @return true if an action server exists, false otherwise
+function ActionClient:has_server()
+   -- we just want any publisher, assuming that in useful scenarios there
+   -- is only one. Oh my, not the double writer problem, again...
+   for uri, p in pairs(self.sub_status.publishers) do
+      if p.connection then
+	 local callerid = p.connection.header.callerid
+	 if self.pub_goal.subscribers[callerid] then
+	    -- We got a subscriber with the matching caller id
+	    return true
+	 end
+      end
+   end
+   return false
+end
 
 --- Wait for server to appear.
 -- To avoids ending goals while there is no server to process them this
@@ -342,24 +358,10 @@ end
 -- method will block and spin the main loop until this happens, there
 -- is no way to interrupt this.
 function ActionClient:wait_for_server()
-   local has_server = false
-   while not has_server do
+   while not self:has_server() do
       -- keep spinning...
       assert(not roslua.quit, "Aborted while waiting for server")
       roslua.spin(0.05)
-
-      local callerid = nil
-      -- we just want any publisher, assuming that in useful scenarios there
-      -- is only one. Oh my, not the double writer problem, again...
-      for uri, p in pairs(self.sub_status.publishers) do
-	 if p.connection then
-	    local callerid = p.connection.header.callerid
-	    if self.pub_goal.subscribers[callerid] then
-	       -- We got a subscriber with the matching caller id
-	       has_server = true
-	    end
-	 end
-      end
    end
 end
 
