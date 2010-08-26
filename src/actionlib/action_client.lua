@@ -33,18 +33,18 @@ require("actionlib.action_spec")
 local ActionSpec = actionlib.action_spec.ActionSpec
 
 
-ClientGoalHandle = { WAIT_GOAL_ACK = 1,
-		     PENDING = 2,
-		     ACTIVE = 3,
-		     WAIT_CANCEL_ACK = 4,
-		     RECALLING = 5,
-		     PREEMPTING = 6,
-		     WAIT_RESULT = 7,
-		     ABORTED = 8,
-		     PREEMPTED = 9,
-		     RECALLED = 10,
-		     REJECTED = 11,
-		     SUCCEEDED = 12,
+ClientGoalHandle = { WAIT_GOAL_ACK   =  1,
+		     PENDING         =  2,
+		     ACTIVE          =  3,
+		     WAIT_CANCEL_ACK =  4,
+		     RECALLING       =  5,
+		     PREEMPTING      =  6,
+		     WAIT_RESULT     =  7,
+		     ABORTED         =  8,
+		     PREEMPTED       =  9,
+		     RECALLED        = 10,
+		     REJECTED        = 11,
+		     SUCCEEDED       = 12,
 		     STATE_TO_STRING = { "WAIT_GOAL_ACK", "PENDING", "ACTIVE", "WAIT_CANCEL_ACK", "RECALLING",
 					 "PREEMPTING", "WAIT_RESULT", "ABORTED", "PREEMPTED", "RECALLED",
 					 "REJECTED", "SUCCEEDED" }
@@ -74,39 +74,49 @@ function ClientGoalHandle:new(o)
    return o
 end
 
+
+--- Set the state of the state machine.
+-- To be used only internally.
+-- @param state new state
+function ClientGoalHandle:set_state(state)
+   self.last_state = self.state
+   self.state = state
+   if self.client.debug and self.last_state ~= self.state then
+      printf("Goal (%s %s) state change %s -> %s", self.client.name, self.goal_id,
+	     self.STATE_TO_STRING[self.last_state], self.STATE_TO_STRING[self.state])
+   end
+
+   self.feedback = nil
+end
+
 --- Update the status.
 -- @param One of the GoalStatus constants
 function ClientGoalHandle:update_status(status)
-   self.last_state = self.state
-
    if status == self.goalstatspec.constants.PENDING.value then
-      self.state = self.PENDING
+      return self:set_state(self.PENDING)
    elseif status == self.goalstatspec.constants.ACTIVE.value then
       if not self:terminal() then
-	 self.state = self.ACTIVE
+	 return self:set_state(self.ACTIVE)
       end
    elseif status == self.goalstatspec.constants.SUCCEEDED.value then
       if self.result == nil then -- result can come in faster than status
-	 self.state = self.WAIT_RESULT
+	 return self:set_state(self.WAIT_RESULT)
       else
-	 self.state = self.SUCCEEDED
+	 return self:set_state(self.SUCCEEDED)
       end
    elseif status == self.goalstatspec.constants.ABORTED.value then
-      self.state = self.ABORTED
+      return self:set_state(self.ABORTED)
    elseif status == self.goalstatspec.constants.REJECTED.value then
-      self.state = self.REJECTED
+      return self:set_state(self.REJECTED)
    elseif status == self.goalstatspec.constants.RECALLED.value then
-      self.state = self.RECALLED
+      return self:set_state(self.RECALLED)
    elseif status == self.goalstatspec.constants.PREEMPTED.value then
-      self.state = self.PREEMPTED
+      return self:set_state(self.PREEMPTED)
    elseif status == self.goalstatspec.constants.PREEMPTING.value then
-      self.state = self.PREEMPTING
+      return self:set_state(self.PREEMPTING)
    elseif status == self.goalstatspec.constants.RECALLING.value then
-      self.state = self.RECALLING
+      return self:set_state(self.RECALLING)
    end
-
-   self.status = status
-   self.feedback = nil
 end
 
 
@@ -134,16 +144,8 @@ end
 -- @param result result message
 function ClientGoalHandle:set_result(result)
    self.result = result
-   if self.status == self.goalstatspec.constants.REJECTED
-      or self.status == self.goalstatspec.constants.ABORTED
-   then
-      self.state = self.FAILED
-   elseif self.status == self.goalstatspec.constants.RECALLED
-       or self.status == self.goalstatspec.constants.PREEMPTED
-   then
-      self.state = self.CANCELED
-   else
-      self.state = self.SUCCEEDED
+   if self.state == self.ACTIVE or self.state == self.WAIT_RESULT then
+      self:set_state(self.SUCCEEDED)
    end
 end
 
@@ -207,8 +209,7 @@ end
 --- Check if goal is awaiting cancellation.
 -- @return true if goal is preempting or recalling, false otherwise.
 function ClientGoalHandle:waiting_for_cancel_ack()
-   return self.state == self.PREEMPTING
-       or self.state == self.RECALLING
+   return self.state == self.WAIT_CANCEL_ACK
 end
 
 --- Check if goal is awaiting result.
@@ -223,6 +224,8 @@ function ClientGoalHandle:cancel()
    local m = self.client.goalidspec:instantiate()
    m.values.id = self.goal_id
    self.client.pub_cancel:publish(m)
+   self.last_state = self.state
+   self:set_state(self.WAIT_CANCEL_ACK)
 end
 
 --- Set feedback.
@@ -276,6 +279,7 @@ function ActionClient:new(o)
    o.listeners = {}
    o.goals = {}
    o.next_goal_id = 1
+   o.debug = o.debug or false
 
    return o
 end
