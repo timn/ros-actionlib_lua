@@ -168,9 +168,8 @@ function ActionServer:new(o)
 
    assert(o.name, "Action name is missing")
    assert(o.type, "Action type is missing")
-   assert(o.goal_cb, "Goal handler is missing")
-   assert(type(o.goal_cb) == "function", "Goal handler is not a function")
-   assert(not o.spin_cb or type(o.spin_cb) == "function", "Spin is not a function")
+   assert(not o.goal_cb   or type(o.goal_cb) == "function", "Goal handler is not a function")
+   assert(not o.spin_cb   or type(o.spin_cb) == "function", "Spin is not a function")
    assert(not o.cancel_cb or type(o.cancel_cb) == "function", "Cancel handler is not a function")
 
    o.actspec       = actionlib.action_spec.get_actionspec(o.type)
@@ -234,10 +233,12 @@ function ActionServer:process_goal(message)
 
    -- if a goal with the given goal ID already exists we simply overwrite it
    self.goals[goal_id] = gh
-   self.goal_cb(gh, self)
-   if gh:is_pending() then
-      -- The goal call back did not explicitly reject, so we assume acceptance
-      gh:accept()
+   if self.goal_cb then
+      self.goal_cb(gh, self)
+      if gh:is_pending() then
+	 -- The goal call back did not explicitly reject, so we assume acceptance
+	 gh:accept()
+      end
    end
 end
 
@@ -281,6 +282,20 @@ function ActionServer:process_cancel(message)
    end
 end
 
+
+--- Get pending goals.
+-- This will filter pending goals from all goals and return them in a list.
+-- This function is most useful for implementing a polling goal processing.
+-- @return list of pending goal (handles)
+function ActionServer:get_pending_goals()
+   local rv = {}
+   for _, goal_handle in pairs(self.goals) do
+      if goal_handle:pending() then
+	 table.insert(rv, goal_handle)
+      end
+   end
+   return rv
+end
 
 --- Publish result.
 -- @param goal_handle goal handle for which to publish a result
