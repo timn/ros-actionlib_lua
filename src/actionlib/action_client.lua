@@ -144,9 +144,6 @@ end
 -- @param result result message
 function ClientGoalHandle:set_result(result)
    self.result = result
-   if self.state == self.ACTIVE or self.state == self.WAIT_RESULT then
-      self:set_state(self.SUCCEEDED)
-   end
 end
 
 --- Check if the state has changed.
@@ -422,6 +419,7 @@ end
 --- Cancel all goals before a specific time.
 -- @param time time before which all goals shall be canceled
 function ActionClient:cancel_goals_before(time)
+   local time = time or roslua.Time.now()
    local m = self.goalidspec:instantiate()
    m.values.stamp = time
    self.pub_cancel:publish(m)
