@@ -278,34 +278,50 @@ function ActionServer:process_cancel(message)
 	 if self.cancel_cb then
 	    self.cancel_cb(self.goals[goal_id], self)
 	 end
-	 self.goals[goal_id]:cancel()
+	 local result = self.actspec.result_spec:instantiate()
+	 self.goals[goal_id]:cancel(result)
       end
    end
    if not message.values.stamp:is_zero() then
-      -- cancel all goals before timestamp
-      local stamp = message.values.stamp
-      print_debug("Cancel goals before %s", tostring(stamp))
-      local remove_goals = {}
+      self:cancel_goals_before(message.values.stamp)
+   end
+   if message.values.id == "" and message.values.stamp:is_zero() then
+      self:cancel_all_goals()
+   end
+end
+
+
+--- Cancel all goals.
+function ActionServer:cancel_all_goals()
+      -- cancel all goals
+      print_debug("Cancelling all goals")
       for goal_id, goal_handle in pairs(self.goals) do
-	 if goal_handle.stamp < stamp then
+	 if not goal_handle:is_terminal() then
 	    if self.cancel_cb then
 	       self.cancel_cb(goal_handle, self)
 	    end
-	    goal_handle:cancel()
+	    local result = self.actspec.result_spec:instantiate()
+	    goal_handle:cancel(result)
 	 end
       end
-   end
-   if message.values.id == "" and message.values.stamp:is_zero() then
-      -- cancel all goals
-      print_debug("Cancel all goals")
-      for goal_id, goal_handle in pairs(self.goals) do
+end
+
+--- Cancel all before the given time
+function ActionServer:cancel_goals_before(stamp)
+   -- cancel all goals before timestamp
+   print_debug("Cancelling goals before %s", tostring(stamp))
+   local remove_goals = {}
+   for goal_id, goal_handle in pairs(self.goals) do
+      if not goal_handle:is_terminal() and goal_handle.stamp < stamp then
 	 if self.cancel_cb then
 	    self.cancel_cb(goal_handle, self)
 	 end
-	 goal_handle:cancel()
+	 local result = self.actspec.result_spec:instantiate()
+	 goal_handle:cancel(result)
       end
    end
 end
+
 
 
 --- Get pending goals.
