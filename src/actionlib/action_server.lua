@@ -129,23 +129,30 @@ end
 
 --- Abort the given goal.
 -- @param text explanatory text
-function ServerGoalHandle:abort(text)
+function ServerGoalHandle:abort(result, text)
+   assert(self.server.actspec.result_spec:is_instance(result),
+	  "Result is not an instance of " .. self.server.actspec.result_spec.type)
    assert(self.state == self.PREEMPTING or self.state == self.ACTIVE,
 	  "Only active or preempting goals can be aborted")
    self.text  = text or ""
    self.state = self.ABORTED
+   self.server:publish_result(self, result)
 end
 
 
 --- Cancel the goal.
 -- @param explanatory text
-function ServerGoalHandle:cancel(text)
+function ServerGoalHandle:cancel(result, text)
+   assert(self.server.actspec.result_spec:is_instance(result),
+	  "Result is not an instance of " .. self.server.actspec.result_spec.type)
+
    self.text  = text or self.text or ""
    if self.state == self.PENDING or self.state == self.RECALLING then
       self.state = self.RECALLED
    elseif self.state == self.ACTIVE or self.state == self.PENDING then
       self.state = self.PREEMPTED
    end
+   self.server:publish_result(self, result)
 end
 
 --- Accept this goal.
@@ -161,6 +168,14 @@ end
 function ServerGoalHandle:reject()
    assert(self.state == self.PENDING, "Only pending goals can be rejected")
    self.state = self.REJECTED
+end
+
+--- Finish this goal successfully.
+function ServerGoalHandle:finish(result)
+   assert(self.server.actspec.result_spec:is_instance(result),
+	  "Result is not an instance of " .. self.server.actspec.result_spec.type)
+   self:set_state(ServerGoalHandle.SUCCEEDED)
+   self.server:publish_result(self, result)
 end
 
 ActionServer = {}
@@ -308,12 +323,17 @@ function ActionServer:get_pending_goals()
 end
 
 --- Publish result.
+-- It is recommended to use the ServerGoalHandle methods abort(), cancel() or
+-- finish() to send the result.
 -- @param goal_handle goal handle for which to publish a result
 -- @param result appropriately typed result message. Note that this is not the
 -- type ending in ActionResult (e.g. TestActionResult), but the message specified
 -- in the action file (e.g. TestResult). The surrounding message is generated
 -- automatically from information stored in the goal handle.
 function ActionServer:publish_result(goal_handle, result)
+   assert(goal_handle, "No goal handle passed")
+   assert(result, "No result passed")
+
    local m = self.actspec.act_result_spec:instantiate()
    m.values.header.values.stamp = roslua.Time.now()
    m.values.header.values.seq   = self.result_seqnum
@@ -322,7 +342,6 @@ function ActionServer:publish_result(goal_handle, result)
    m.values.status.values.status = goal_handle.state
    m.values.result = result
    self.pub_result:publish(m)
-   goal_handle:set_state(ServerGoalHandle.SUCCEEDED)
 end
 
 --- Publish feedback.
@@ -332,6 +351,9 @@ end
 -- specified in the action file (e.g. TestFeedback). The surrounding message is
 -- generated automatically from information stored in the goal handle.
 function ActionServer:publish_feedback(goal_handle, feedback)
+   assert(goal_handle, "No goal handle passed")
+   assert(feedback, "No result passed")
+
    local m = self.actspec.act_feedback_spec:instantiate()
    m.values.header.values.seq   = self.feedback_seqnum
    self.feedback_seqnum = self.feedback_seqnum + 1
