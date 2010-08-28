@@ -104,6 +104,16 @@ function ServerGoalHandle:is_active()
    return self.state == self.ACTIVE
 end
 
+--- Check if goal is in a terminal state
+-- @return true if goal is preempted, recalled, aborted, rejected, or succeeded.
+function ServerGoalHandle:is_terminal()
+   return self.state == self.PREEMPTED
+       or self.state == self.RECALLED
+       or self.state == self.ABORTED
+       or self.state == self.REJECTED
+       or self.state == self.SUCCEEDED
+end
+
 --- Check if goal is pending
 -- @return true if the goal is pending, false otherwise
 function ServerGoalHandle:is_pending()
