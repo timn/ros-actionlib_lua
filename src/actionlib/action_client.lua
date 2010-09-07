@@ -143,7 +143,8 @@ end
 -- This is to be called only by the ActionClient.
 -- @param result result message
 function ClientGoalHandle:set_result(result)
-   self.result = result
+   self.act_result = result
+   self.result = result.values.result
 end
 
 --- Check if the state has changed.
@@ -218,11 +219,13 @@ end
 
 --- Cancel this goal.
 function ClientGoalHandle:cancel()
-   local m = self.client.goalidspec:instantiate()
-   m.values.id = self.goal_id
-   self.client.pub_cancel:publish(m)
-   self.last_state = self.state
-   self:set_state(self.WAIT_CANCEL_ACK)
+   if not self:terminal() then
+      local m = self.client.goalidspec:instantiate()
+      m.values.id = self.goal_id
+      self.client.pub_cancel:publish(m)
+      self.last_state = self.state
+      self:set_state(self.WAIT_CANCEL_ACK)
+   end
 end
 
 --- Set feedback.
