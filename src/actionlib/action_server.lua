@@ -350,6 +350,10 @@ function ActionServer:publish_result(goal_handle, result)
    assert(goal_handle, "No goal handle passed")
    assert(result, "No result passed")
 
+   if goal_handle.result_published then
+      print_warn("Result already published for goal %s", goal_handle.goal_id)
+   end
+
    local m = self.actspec.act_result_spec:instantiate()
    m.values.header.values.stamp = roslua.Time.now()
    m.values.header.values.seq   = self.result_seqnum
@@ -358,6 +362,7 @@ function ActionServer:publish_result(goal_handle, result)
    m.values.status.values.status = goal_handle.state
    m.values.result = result
    self.pub_result:publish(m)
+   goal_handle.result_published = true
 end
 
 --- Publish feedback.
