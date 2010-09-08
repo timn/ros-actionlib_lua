@@ -219,12 +219,17 @@ end
 
 --- Cancel this goal.
 function ClientGoalHandle:cancel()
-   if not self:terminal() then
-      local m = self.client.goalidspec:instantiate()
-      m.values.id = self.goal_id
-      self.client.pub_cancel:publish(m)
-      self.last_state = self.state
-      self:set_state(self.WAIT_CANCEL_ACK)
+   if self.client.pub_cancel then
+      if not self:terminal() then
+	 local m = self.client.goalidspec:instantiate()
+	 m.values.id = self.goal_id
+	 self.client.pub_cancel:publish(m)
+	 self.last_state = self.state
+	 self:set_state(self.WAIT_CANCEL_ACK)
+      end
+   else
+      print_warn("ActionClient[%s::%s] cancelling of goal %s requested, but cancelling"..
+		 "disabled", self.client.name, self.client.type, self.goal_id)
    end
 end
 
@@ -268,13 +273,19 @@ function ActionClient:new(o)
 
    o.sub_status   = roslua.subscriber(o.name .. "/status", o.statusspec)
    o.sub_result   = roslua.subscriber(o.name .. "/result", o.actspec.act_result_spec)
-   o.sub_feedback = roslua.subscriber(o.name .. "/feedback", o.actspec.act_feedback_spec)
+   if not o.no_feedback then
+      o.sub_feedback = roslua.subscriber(o.name .. "/feedback", o.actspec.act_feedback_spec)
+   end
    o.pub_goal     = roslua.publisher(o.name .. "/goal", o.actspec.act_goal_spec)
-   o.pub_cancel   = roslua.publisher(o.name .. "/cancel", o.goalidspec)
+   if not o.no_cancel then
+      o.pub_cancel   = roslua.publisher(o.name .. "/cancel", o.goalidspec)
+   end
 
    o.sub_status:add_listener(function (message) return o:process_status(message) end)
    o.sub_result:add_listener(function (message) return o:process_result(message) end)
-   o.sub_feedback:add_listener(function (message) return o:process_feedback(message) end)
+   if o.sub_feedback then
+      o.sub_feedback:add_listener(function (message) return o:process_feedback(message) end)
+   end
 
    o.listeners = {}
    o.goals = {}
@@ -415,16 +426,26 @@ end
 
 --- Cancel all current goals.
 function ActionClient:cancel_all_goals()
-   local m = self.goalidspec:instantiate()
-   self.pub_cancel:publish(m)
+   if self.pub_cancel then
+      local m = self.goalidspec:instantiate()
+      self.pub_cancel:publish(m)
+   else
+      print_warn("ActionClient[%s::%s] cancelling of all goals requested, "..
+		 "but cancelling disabled", self.name, self.type)
+   end
 end
 
 --- Cancel all goals before a specific time.
 -- @param time time before which all goals shall be canceled
 function ActionClient:cancel_goals_before(time)
-   local time = time or roslua.Time.now()
-   local m = self.goalidspec:instantiate()
-   m.values.stamp = time
-   self.pub_cancel:publish(m)
+   if self.pub_cancel then
+      local time = time or roslua.Time.now()
+      local m = self.goalidspec:instantiate()
+      m.values.stamp = time
+      self.pub_cancel:publish(m)
+   else
+      print_warn("ActionClient[%s::%s] cancelling of goals before %s requested, "..
+		 "but cancelling disabled", self.name, self.type, tostring(time))
+   end
 end
 

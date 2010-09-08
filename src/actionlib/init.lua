@@ -29,8 +29,10 @@ ActionServer   = actionlib.action_server.ActionServer
 -- is performed it is ok to use the constructor directly.
 -- @param name name of the action client
 -- @param type type of the action (i.e. the package-prefixed action file)
-function action_client(name, type)
-   return ActionClient:new{name=name, type=type}
+function action_client(name, type, flags)
+   local o = {name=name, type=type}
+   if flags then for k,v in pairs(flags) do o[k] = v end end
+   return ActionClient:new(o)
 end
 
 --- Create a new action server.
