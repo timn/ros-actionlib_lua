@@ -145,6 +145,7 @@ end
 function ClientGoalHandle:set_result(result)
    self.act_result = result
    self.result = result.values.result
+   self.status_text = result.values.status.values.text
 end
 
 --- Check if the state has changed.
