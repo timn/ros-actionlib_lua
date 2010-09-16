@@ -1,0 +1,24 @@
+
+actionlib_lua: ROS actionlib in Lua
+===================================
+
+This Lua package provides an implementation of actionlib in Lua. It can be
+used with roslua to access and provide actions from and to other ROS nodes.
+
+
+Requirements
+------------
+The following software packages are needed on your system in order to
+use actionlib_lua. Requirements marked with (*) have specific information
+further down below.
+
+- Lua 5.1			http://www.lua.org
+- roslua 0.4                    http://github.com/timn/roslua
+
+Documentation
+-------------
+All public API functions and modules have been documented. The
+documentation is generated using LuaDoc by calling "make doc" in the
+roslua directory. Pre-generated documentation can be found in the
+doc/ directory (open doc/index.html in a web browser of your choice).
+

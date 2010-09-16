@@ -1,0 +1,1037 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b>actionlib_lua: ROS actionlib in Lua</b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>roslua</h1>
+
+<ul>
+	
+	<li><a href="../index.html">Index</a></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+<h1>Modules</h1>
+<ul>
+
+	<li>
+		<a href="../modules/actionlib.html">actionlib</a>
+	</li>
+
+	<li><strong>actionlib.action_client</strong></li>
+	
+	<li>
+		<a href="../modules/actionlib.action_server.html">actionlib.action_server</a>
+	</li>
+
+	<li>
+		<a href="../modules/actionlib.action_spec.html">actionlib.action_spec</a>
+	</li>
+
+</ul>
+
+
+
+<!-- File list -->
+
+
+
+
+
+
+</div><!-- id="navigation" -->
+
+<div id="content">
+
+<h1>Module <code>actionlib.action_client</code></h1>
+
+<p>Action client. This module contains the ActionClient class to call the execution of actions provided by an action server. It reads the given action message specifications and opens the appropriate topics for communication. It is recommended to use the <code>actionlib.action_client()</code> function to acquire the client. <br /><br /> The ActionClient will connect to an ActionServer via several topics (cf. the actionlib documentation for details). The Lua implementation supports sending an virtually arbitrary number of goals. Each goal is associated with a ClientGoalHandle which provides information about the goal and its current state. Additionally for a goal one or more listeners can be registered to get notified if the state changes or feedback or result messages are received.</p>
+
+
+<p>Copyright&copy; Tim Niemueller, Carnegie Mellon University, Intel Research Pittsburgh</p>
+
+
+<p><small><b>Release:</b> Released under BSD license</small></p>
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:add_listener">ActionClient:add_listener</a>&nbsp;(goal_id, listener)</td>
+	<td class="summary">Add listener.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:cancel_all_goals">ActionClient:cancel_all_goals</a>&nbsp;()</td>
+	<td class="summary">Cancel all current goals.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:cancel_goals_before">ActionClient:cancel_goals_before</a>&nbsp;(time)</td>
+	<td class="summary">Cancel all goals before a specific time.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:generate_goal_id">ActionClient:generate_goal_id</a>&nbsp;()</td>
+	<td class="summary">Generate a unique goal ID.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:has_server">ActionClient:has_server</a>&nbsp;()</td>
+	<td class="summary">Check if there is a server for this action client.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:new">ActionClient:new</a>&nbsp;(o)</td>
+	<td class="summary">Constructor.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:process_feedback">ActionClient:process_feedback</a>&nbsp;(message)</td>
+	<td class="summary">Process feedback.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:process_result">ActionClient:process_result</a>&nbsp;(message)</td>
+	<td class="summary">Process result.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:process_status">ActionClient:process_status</a>&nbsp;(message)</td>
+	<td class="summary">Process status message.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:remove_listener">ActionClient:remove_listener</a>&nbsp;(goal_id, listener)</td>
+	<td class="summary">Remove listener.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:send_goal">ActionClient:send_goal</a>&nbsp;(goal, listener)</td>
+	<td class="summary">Send and order execution of a goal.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:wait_for_result">ActionClient:wait_for_result</a>&nbsp;()</td>
+	<td class="summary">Wait for result.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionClient:wait_for_server">ActionClient:wait_for_server</a>&nbsp;()</td>
+	<td class="summary">Wait for server to appear.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:add_listener">ClientGoalHandle:add_listener</a>&nbsp;(listener, function)</td>
+	<td class="summary">Add a listener.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:cancel">ClientGoalHandle:cancel</a>&nbsp;()</td>
+	<td class="summary">Cancel this goal.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:canceled">ClientGoalHandle:canceled</a>&nbsp;()</td>
+	<td class="summary">Check if goal has been canceled.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:failed">ClientGoalHandle:failed</a>&nbsp;()</td>
+	<td class="summary">Check if goal has failed.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:feedback_received">ClientGoalHandle:feedback_received</a>&nbsp;()</td>
+	<td class="summary">Check if feedback has been received.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:new">ClientGoalHandle:new</a>&nbsp;(o)</td>
+	<td class="summary">Constructor.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:notify_listeners">ClientGoalHandle:notify_listeners</a>&nbsp;()</td>
+	<td class="summary">Notify listeners of new event.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:preempted">ClientGoalHandle:preempted</a>&nbsp;()</td>
+	<td class="summary">Check if goal was preempted </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:remove_listener">ClientGoalHandle:remove_listener</a>&nbsp;(listener)</td>
+	<td class="summary">Remove listener.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:running">ClientGoalHandle:running</a>&nbsp;()</td>
+	<td class="summary">Check if goal is active </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:set_feedback">ClientGoalHandle:set_feedback</a>&nbsp;(feedback)</td>
+	<td class="summary">Set feedback.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:set_result">ClientGoalHandle:set_result</a>&nbsp;(result)</td>
+	<td class="summary">Set the result.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:set_state">ClientGoalHandle:set_state</a>&nbsp;(state)</td>
+	<td class="summary">Set the state of the state machine.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:state_changed">ClientGoalHandle:state_changed</a>&nbsp;()</td>
+	<td class="summary">Check if the state has changed.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:succeeded">ClientGoalHandle:succeeded</a>&nbsp;()</td>
+	<td class="summary">Check if goal succeeded </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:terminal">ClientGoalHandle:terminal</a>&nbsp;()</td>
+	<td class="summary">Check if goal is in a terminal state.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:update_status">ClientGoalHandle:update_status</a>&nbsp;(status, One)</td>
+	<td class="summary">Update the status.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:waiting_for_cancel_ack">ClientGoalHandle:waiting_for_cancel_ack</a>&nbsp;()</td>
+	<td class="summary">Check if goal is awaiting cancellation.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:waiting_for_result">ClientGoalHandle:waiting_for_result</a>&nbsp;()</td>
+	<td class="summary">Check if goal is awaiting result.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ClientGoalHandle:waiting_for_start_ack">ClientGoalHandle:waiting_for_start_ack</a>&nbsp;()</td>
+	<td class="summary">Check if goal is pending </td>
+	</tr>
+
+</table>
+
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="ActionClient:add_listener"></a><strong>ActionClient:add_listener</strong>&nbsp;(goal_id, listener)</dt>
+<dd>
+Add listener. A listener is a function which is called on events like state changes or incoming feedback with two arguments, the goal handle and the associated action client.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  goal_id: the goal ID to register the listener or
+	</li>
+	
+	<li>
+	  listener: listener to add
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:cancel_all_goals"></a><strong>ActionClient:cancel_all_goals</strong>&nbsp;()</dt>
+<dd>
+Cancel all current goals.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:cancel_goals_before"></a><strong>ActionClient:cancel_goals_before</strong>&nbsp;(time)</dt>
+<dd>
+Cancel all goals before a specific time.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  time: time before which all goals shall be canceled
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:generate_goal_id"></a><strong>ActionClient:generate_goal_id</strong>&nbsp;()</dt>
+<dd>
+Generate a unique goal ID.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+unique goal ID
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:has_server"></a><strong>ActionClient:has_server</strong>&nbsp;()</dt>
+<dd>
+Check if there is a server for this action client.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if an action server exists, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:new"></a><strong>ActionClient:new</strong>&nbsp;(o)</dt>
+<dd>
+Constructor.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  o: Object initializer, must contain the following fields: name namespace for topics type type of action with the string representation of the action name
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:process_feedback"></a><strong>ActionClient:process_feedback</strong>&nbsp;(message)</dt>
+<dd>
+Process feedback.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  message: Appropriately typed feedback message
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:process_result"></a><strong>ActionClient:process_result</strong>&nbsp;(message)</dt>
+<dd>
+Process result.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  message: Appropriately typed result message
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:process_status"></a><strong>ActionClient:process_status</strong>&nbsp;(message)</dt>
+<dd>
+Process status message.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  message: GoalStatusArray message to process
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:remove_listener"></a><strong>ActionClient:remove_listener</strong>&nbsp;(goal_id, listener)</dt>
+<dd>
+Remove listener.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  goal_id: 
+	</li>
+	
+	<li>
+	  listener: listener to remove
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:send_goal"></a><strong>ActionClient:send_goal</strong>&nbsp;(goal, listener)</dt>
+<dd>
+Send and order execution of a goal.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  goal: appropriately typed goal message
+	</li>
+	
+	<li>
+	  listener: listener function for this goal (optional)
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+goal handle for the issued goal
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:wait_for_result"></a><strong>ActionClient:wait_for_result</strong>&nbsp;()</dt>
+<dd>
+Wait for result. This method will block and spin the main loop until a result message has been received from the server. Warning, this method may stall if the server dies.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionClient:wait_for_server"></a><strong>ActionClient:wait_for_server</strong>&nbsp;()</dt>
+<dd>
+Wait for server to appear. To avoids ending goals while there is no server to process them this method can be used to wait until a server appears. Note that this method will block and spin the main loop until this happens, there is no way to interrupt this.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:add_listener"></a><strong>ClientGoalHandle:add_listener</strong>&nbsp;(listener, function)</dt>
+<dd>
+Add a listener.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  listener: 
+	</li>
+	
+	<li>
+	  function: which is called with two arguments, the handle and the associated client, on future events.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:cancel"></a><strong>ClientGoalHandle:cancel</strong>&nbsp;()</dt>
+<dd>
+Cancel this goal.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:canceled"></a><strong>ClientGoalHandle:canceled</strong>&nbsp;()</dt>
+<dd>
+Check if goal has been canceled.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if goal has been canceled, i.e. been preempted or recalled, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:failed"></a><strong>ClientGoalHandle:failed</strong>&nbsp;()</dt>
+<dd>
+Check if goal has failed.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if goal was aborted, preempted, recalled, or rejected, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:feedback_received"></a><strong>ClientGoalHandle:feedback_received</strong>&nbsp;()</dt>
+<dd>
+Check if feedback has been received.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if feedback has been received in the last spin, false otherwise.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:new"></a><strong>ClientGoalHandle:new</strong>&nbsp;(o)</dt>
+<dd>
+Constructor. Do not call this directly. Goal handles are generated by the ActionClient.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  o: table which is setup as the object instance and which must have at least the following fields: goal_id the ID of the goal this handle represents client the action client this handle is associated to.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:notify_listeners"></a><strong>ClientGoalHandle:notify_listeners</strong>&nbsp;()</dt>
+<dd>
+Notify listeners of new event. To be called only by ActionClient.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:preempted"></a><strong>ClientGoalHandle:preempted</strong>&nbsp;()</dt>
+<dd>
+Check if goal was preempted
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if goal was preempted, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:remove_listener"></a><strong>ClientGoalHandle:remove_listener</strong>&nbsp;(listener)</dt>
+<dd>
+Remove listener.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  listener: The listener to remove.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:running"></a><strong>ClientGoalHandle:running</strong>&nbsp;()</dt>
+<dd>
+Check if goal is active
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if goal is active, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:set_feedback"></a><strong>ClientGoalHandle:set_feedback</strong>&nbsp;(feedback)</dt>
+<dd>
+Set feedback. To be called only by ActionClient.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  feedback: received feedback message
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:set_result"></a><strong>ClientGoalHandle:set_result</strong>&nbsp;(result)</dt>
+<dd>
+Set the result. This is to be called only by the ActionClient.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  result: result message
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:set_state"></a><strong>ClientGoalHandle:set_state</strong>&nbsp;(state)</dt>
+<dd>
+Set the state of the state machine. To be used only internally.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  state: new state
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:state_changed"></a><strong>ClientGoalHandle:state_changed</strong>&nbsp;()</dt>
+<dd>
+Check if the state has changed.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if the state has changed in the last spin, false otherwise.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:succeeded"></a><strong>ClientGoalHandle:succeeded</strong>&nbsp;()</dt>
+<dd>
+Check if goal succeeded
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if goal succeeded, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:terminal"></a><strong>ClientGoalHandle:terminal</strong>&nbsp;()</dt>
+<dd>
+Check if goal is in a terminal state.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if the goal has succeeded, failed, or canceled
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:update_status"></a><strong>ClientGoalHandle:update_status</strong>&nbsp;(status, One)</dt>
+<dd>
+Update the status.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  status: 
+	</li>
+	
+	<li>
+	  One: of the GoalStatus constants
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:waiting_for_cancel_ack"></a><strong>ClientGoalHandle:waiting_for_cancel_ack</strong>&nbsp;()</dt>
+<dd>
+Check if goal is awaiting cancellation.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if goal is preempting or recalling, false otherwise.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:waiting_for_result"></a><strong>ClientGoalHandle:waiting_for_result</strong>&nbsp;()</dt>
+<dd>
+Check if goal is awaiting result.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if the goal has succeeded but the result has not been received, yet, false otherwise.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ClientGoalHandle:waiting_for_start_ack"></a><strong>ClientGoalHandle:waiting_for_start_ack</strong>&nbsp;()</dt>
+<dd>
+Check if goal is pending
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if goal is pending, false otherwise
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>

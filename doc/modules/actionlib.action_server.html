@@ -1,0 +1,835 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b>actionlib_lua: ROS actionlib in Lua</b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>roslua</h1>
+
+<ul>
+	
+	<li><a href="../index.html">Index</a></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+<h1>Modules</h1>
+<ul>
+
+	<li>
+		<a href="../modules/actionlib.html">actionlib</a>
+	</li>
+
+	<li>
+		<a href="../modules/actionlib.action_client.html">actionlib.action_client</a>
+	</li>
+
+	<li><strong>actionlib.action_server</strong></li>
+	
+	<li>
+		<a href="../modules/actionlib.action_spec.html">actionlib.action_spec</a>
+	</li>
+
+</ul>
+
+
+
+<!-- File list -->
+
+
+
+
+
+
+</div><!-- id="navigation" -->
+
+<div id="content">
+
+<h1>Module <code>actionlib.action_server</code></h1>
+
+<p>Action server. This module contains the ActionServer class to provide actions which can be executed by an ActionClient. <br /><br /> The action server is initialized with at least two callbacks. One is the goal callback. It is called on new incoming goals. The callback gets the ServerGoalHandle for this goal and the associated ActionServer instance as arguments. The callback can then accept or reject the goal by calling the appropriate goal handle method. If the callback does call neither of this method acceptance is assumed. The second callback is the spin callback. It is called in each loop for every goal to execute one step of the goal. Note that due to the nature if Lua and the need for a central main loop your spin method must return as soon as possible. For lengthy actions this means that you cannot run a continuous method for your action, as you possibly would with roscpp or rospy! Lua coroutines might be useful to meet this requirement. The spin callback is optional in the case of short-duration actions. In this case you must send the result in the goal callback! Optionally a cancel callback can be given, which is called when a goal is canceled. It could be used for example for safely stopping a goal. After a goal has been canceled the spin function is no longer called for this goal.</p>
+
+
+<p>Copyright&copy; Tim Niemueller, Carnegie Mellon University, Intel Research Pittsburgh</p>
+
+
+<p><small><b>Release:</b> Released under BSD license</small></p>
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:cancel_all_goals">ActionServer:cancel_all_goals</a>&nbsp;()</td>
+	<td class="summary">Cancel all goals.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:cancel_goals_before">ActionServer:cancel_goals_before</a>&nbsp;(stamp)</td>
+	<td class="summary">Cancel all before the given time </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:finalize">ActionServer:finalize</a>&nbsp;()</td>
+	<td class="summary">Finalize instance.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:generate_goal_id">ActionServer:generate_goal_id</a>&nbsp;()</td>
+	<td class="summary">Generate a unique goal ID.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:get_pending_goals">ActionServer:get_pending_goals</a>&nbsp;()</td>
+	<td class="summary">Get pending goals.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:new">ActionServer:new</a>&nbsp;(o)</td>
+	<td class="summary">Constructor.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:process_cancel">ActionServer:process_cancel</a>&nbsp;(message)</td>
+	<td class="summary">Process incoming cancel message.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:process_goal">ActionServer:process_goal</a>&nbsp;(message)</td>
+	<td class="summary">Process incoming goal.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:publish_feedback">ActionServer:publish_feedback</a>&nbsp;(goal_handle, feedback, result)</td>
+	<td class="summary">Publish feedback.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:publish_result">ActionServer:publish_result</a>&nbsp;(goal_handle, result)</td>
+	<td class="summary">Publish result.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:publish_status">ActionServer:publish_status</a>&nbsp;()</td>
+	<td class="summary">Publish status.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:spin">ActionServer:spin</a>&nbsp;()</td>
+	<td class="summary">Spin the action server.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ActionServer:spin_goals">ActionServer:spin_goals</a>&nbsp;()</td>
+	<td class="summary">Spin the goals.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:abort">ServerGoalHandle:abort</a>&nbsp;(result, text)</td>
+	<td class="summary">Abort the given goal.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:accept">ServerGoalHandle:accept</a>&nbsp;()</td>
+	<td class="summary">Accept this goal.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:cancel">ServerGoalHandle:cancel</a>&nbsp;(result, text, explanatory)</td>
+	<td class="summary">Cancel the goal.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:finish">ServerGoalHandle:finish</a>&nbsp;(result)</td>
+	<td class="summary">Finish this goal successfully.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:is_active">ServerGoalHandle:is_active</a>&nbsp;()</td>
+	<td class="summary">Check if goal is active </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:is_canceled">ServerGoalHandle:is_canceled</a>&nbsp;()</td>
+	<td class="summary">Check if goal has been canceled </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:is_pending">ServerGoalHandle:is_pending</a>&nbsp;()</td>
+	<td class="summary">Check if goal is pending </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:is_terminal">ServerGoalHandle:is_terminal</a>&nbsp;()</td>
+	<td class="summary">Check if goal is in a terminal state </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:new">ServerGoalHandle:new</a>&nbsp;(o, stamp)</td>
+	<td class="summary">Constructor.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:reject">ServerGoalHandle:reject</a>&nbsp;()</td>
+	<td class="summary">Reject this goal.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:set_state">ServerGoalHandle:set_state</a>&nbsp;(state, text)</td>
+	<td class="summary">Set the state.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:state_changed">ServerGoalHandle:state_changed</a>&nbsp;()</td>
+	<td class="summary">Check if the status has changed.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#ServerGoalHandle:update_expiration">ServerGoalHandle:update_expiration</a>&nbsp;()</td>
+	<td class="summary">Update the expiration date.</td>
+	</tr>
+
+</table>
+
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="ActionServer:cancel_all_goals"></a><strong>ActionServer:cancel_all_goals</strong>&nbsp;()</dt>
+<dd>
+Cancel all goals.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:cancel_goals_before"></a><strong>ActionServer:cancel_goals_before</strong>&nbsp;(stamp)</dt>
+<dd>
+Cancel all before the given time
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  stamp: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:finalize"></a><strong>ActionServer:finalize</strong>&nbsp;()</dt>
+<dd>
+Finalize instance.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:generate_goal_id"></a><strong>ActionServer:generate_goal_id</strong>&nbsp;()</dt>
+<dd>
+Generate a unique goal ID.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+unique goal ID
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:get_pending_goals"></a><strong>ActionServer:get_pending_goals</strong>&nbsp;()</dt>
+<dd>
+Get pending goals. This will filter pending goals from all goals and return them in a list. This function is most useful for implementing a polling goal processing.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+list of pending goal (handles)
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:new"></a><strong>ActionServer:new</strong>&nbsp;(o)</dt>
+<dd>
+Constructor.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  o: Object initializer, must contain the following fields: name namespace for topics type type of action with the string representation of the action name. goal_cb goal callback spin_cb spin callback (optional) cancel_cb cancel callback (optional)
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:process_cancel"></a><strong>ActionServer:process_cancel</strong>&nbsp;(message)</dt>
+<dd>
+Process incoming cancel message.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  message: cancel message
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:process_goal"></a><strong>ActionServer:process_goal</strong>&nbsp;(message)</dt>
+<dd>
+Process incoming goal.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  message: appropriately typed goal message
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:publish_feedback"></a><strong>ActionServer:publish_feedback</strong>&nbsp;(goal_handle, feedback, result)</dt>
+<dd>
+Publish feedback.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  goal_handle: goal handle for which to publish a result
+	</li>
+	
+	<li>
+	  feedback: 
+	</li>
+	
+	<li>
+	  result: appropriately typed feedback message. Note that this is not the type ending in ActionFeedback (e.g. TestActionFeedback), but the message specified in the action file (e.g. TestFeedback). The surrounding message is generated automatically from information stored in the goal handle.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:publish_result"></a><strong>ActionServer:publish_result</strong>&nbsp;(goal_handle, result)</dt>
+<dd>
+Publish result. It is recommended to use the ServerGoalHandle methods abort(), cancel() or finish() to send the result.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  goal_handle: goal handle for which to publish a result
+	</li>
+	
+	<li>
+	  result: appropriately typed result message. Note that this is not the type ending in ActionResult (e.g. TestActionResult), but the message specified in the action file (e.g. TestResult). The surrounding message is generated automatically from information stored in the goal handle.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:publish_status"></a><strong>ActionServer:publish_status</strong>&nbsp;()</dt>
+<dd>
+Publish status. To be called only internally. This checks all current goals for their status. If a goal expired it is removed, if any goal has changed its state or the status_update_interval has elapsed a GoalStatusArray message is published.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:spin"></a><strong>ActionServer:spin</strong>&nbsp;()</dt>
+<dd>
+Spin the action server. Spins goals and publishes status as needed.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ActionServer:spin_goals"></a><strong>ActionServer:spin_goals</strong>&nbsp;()</dt>
+<dd>
+Spin the goals. Calls the spin callback for all active goals.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:abort"></a><strong>ServerGoalHandle:abort</strong>&nbsp;(result, text)</dt>
+<dd>
+Abort the given goal.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  result: 
+	</li>
+	
+	<li>
+	  text: explanatory text
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:accept"></a><strong>ServerGoalHandle:accept</strong>&nbsp;()</dt>
+<dd>
+Accept this goal.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:cancel"></a><strong>ServerGoalHandle:cancel</strong>&nbsp;(result, text, explanatory)</dt>
+<dd>
+Cancel the goal.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  result: 
+	</li>
+	
+	<li>
+	  text: 
+	</li>
+	
+	<li>
+	  explanatory: text
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:finish"></a><strong>ServerGoalHandle:finish</strong>&nbsp;(result)</dt>
+<dd>
+Finish this goal successfully.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  result: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:is_active"></a><strong>ServerGoalHandle:is_active</strong>&nbsp;()</dt>
+<dd>
+Check if goal is active
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if the goal is active, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:is_canceled"></a><strong>ServerGoalHandle:is_canceled</strong>&nbsp;()</dt>
+<dd>
+Check if goal has been canceled
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if the goal has been canceled, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:is_pending"></a><strong>ServerGoalHandle:is_pending</strong>&nbsp;()</dt>
+<dd>
+Check if goal is pending
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if the goal is pending, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:is_terminal"></a><strong>ServerGoalHandle:is_terminal</strong>&nbsp;()</dt>
+<dd>
+Check if goal is in a terminal state
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if goal is preempted, recalled, aborted, rejected, or succeeded.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:new"></a><strong>ServerGoalHandle:new</strong>&nbsp;(o, stamp)</dt>
+<dd>
+Constructor. Do not call this directly. Goal handles are created by the ActionServer.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  o: table which is setup as the object instance and which must have at least the following fields: goal_id the goal ID of this handle server the associated ActionServer instance
+	</li>
+	
+	<li>
+	  stamp: the time stamp when the goal was started
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:reject"></a><strong>ServerGoalHandle:reject</strong>&nbsp;()</dt>
+<dd>
+Reject this goal.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:set_state"></a><strong>ServerGoalHandle:set_state</strong>&nbsp;(state, text)</dt>
+<dd>
+Set the state. To be called only by the ActionServer.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  state: new staet
+	</li>
+	
+	<li>
+	  text: explanatory text to set
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:state_changed"></a><strong>ServerGoalHandle:state_changed</strong>&nbsp;()</dt>
+<dd>
+Check if the status has changed.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="ServerGoalHandle:update_expiration"></a><strong>ServerGoalHandle:update_expiration</strong>&nbsp;()</dt>
+<dd>
+Update the expiration date. The expiration date is reset to be now plus the timeout interval.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>
