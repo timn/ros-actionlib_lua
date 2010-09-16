@@ -3,11 +3,10 @@
 --  init.lua - base file for actionlib library
 --
 --  Created: Thu Aug 05 17:56:25 2010 (at Intel Research, Pittsburgh)
+--  License: BSD, cf. LICENSE file of roslua
 --  Copyright  2010  Tim Niemueller [www.niemueller.de]
 --
 ----------------------------------------------------------------------------
-
--- Licensed under BSD license
 
 --- Actionlib implementation for Lua.
 -- This module and its sub-modules provide tools to make use of actionlib from

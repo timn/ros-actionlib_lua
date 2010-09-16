@@ -3,11 +3,10 @@
 --  action_client.lua - Action client
 --
 --  Created: Fri Aug 06 11:41:07 2010 (at Intel Research, Pittsburgh)
+--  License: BSD, cf. LICENSE file of roslua
 --  Copyright  2010  Tim Niemueller [www.niemueller.de]
 --
 ----------------------------------------------------------------------------
-
--- Licensed under BSD license
 
 --- Action client.
 -- This module contains the ActionClient class to call the execution of

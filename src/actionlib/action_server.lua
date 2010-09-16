@@ -3,11 +3,10 @@
 --  action_server.lua - Action server
 --
 --  Created: Mon Aug 16 17:10:44 2010 (at Intel Research, Pittsburgh)
+--  License: BSD, cf. LICENSE file of roslua
 --  Copyright  2010  Tim Niemueller [www.niemueller.de]
 --
 ----------------------------------------------------------------------------
-
--- Licensed under BSD license
 
 --- Action server.
 -- This module contains the ActionServer class to provide actions which can

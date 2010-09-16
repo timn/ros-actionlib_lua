@@ -3,11 +3,10 @@
 --  action_spec.lua - Action specification wrapper
 --
 --  Created: Fri Aug 06 11:41:07 2010 (at Intel Research, Pittsburgh)
+--  License: BSD, cf. LICENSE file of roslua
 --  Copyright  2010  Tim Niemueller [www.niemueller.de]
 --
 ----------------------------------------------------------------------------
-
--- Licensed under BSD license
 
 --- action specification.
 -- This module contains the ActionSpec class to read and represent ROS action
