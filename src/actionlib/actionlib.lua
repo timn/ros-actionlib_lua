@@ -19,6 +19,11 @@ require("actionlib.action_spec")
 require("actionlib.action_client")
 require("actionlib.action_server")
 
+VERSION_MAJOR = 0
+VERSION_MINOR = 3
+VERSION_MICRO = 0
+VERSION = VERSION_MAJOR .. "." .. VERSION_MINOR .. "." .. VERSION_MICRO
+
 get_actionspec = actionlib.action_spec.get_actionspec
 ActionClient   = actionlib.action_client.ActionClient
 ActionServer   = actionlib.action_server.ActionServer
