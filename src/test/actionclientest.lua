@@ -16,11 +16,14 @@ roslua.init_node{master_uri=os.getenv("ROS_MASTER_URI"), node_name="/actionclien
 
 print()
 print("Action client tests")
-
 print()
+
 local acl = actionlib.action_client("/fibonacci", "actionlib_tutorials/Fibonacci")
+acl.debug = true
 --acl.actspec:print()
+printf("Waiting for action server")
 acl:wait_for_server()
+printf("Connected")
 --acl:cancel_all_goals()
 
 GOAL_ORDER = 30
@@ -37,7 +40,7 @@ function listener(goal_handle, acl)
       end
    elseif goal_handle:feedback_received() then
       if #goal_handle.feedback.values.sequence == 15 and math.random() > 0.8 then
-	 printf("Cancelling")
+	 printf("Canceling")
 	 goal_handle:cancel()
       else
 	 printf("Feedback received: (%d) %s", #goal_handle.feedback.values.sequence,
@@ -48,6 +51,7 @@ end
 
 local goal = acl.actspec.goal_spec:instantiate()
 goal.values.order = GOAL_ORDER
+printf("Sending goal")
 acl:send_goal(goal, listener)
 
 roslua.run(0.5)

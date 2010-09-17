@@ -45,7 +45,7 @@ function spin(gh, as)
       -- send result
       local result = as.actspec.result_spec:instantiate()
       result.values.sequence = gh.vars.seq
-      as:publish_result(gh, result)
+      gh:finish(result)
    end
 end
 
@@ -56,4 +56,4 @@ end
 as = actionlib.action_server("/fibonacci", "actionlib_tutorials/Fibonacci",
 			     goal_cb, spin, cancel_cb)
 
-roslua.run()
+roslua.run(10)
