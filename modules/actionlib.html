@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b>actionlib_lua: ROS actionlib in Lua</b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>roslua</h1>
+
+<ul>
+	
+	<li><a href="../index.html">Index</a></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+<h1>Modules</h1>
+<ul>
+
+	<li><strong>actionlib</strong></li>
+	
+	<li>
+		<a href="../modules/actionlib.action_client.html">actionlib.action_client</a>
+	</li>
+
+	<li>
+		<a href="../modules/actionlib.action_server.html">actionlib.action_server</a>
+	</li>
+
+	<li>
+		<a href="../modules/actionlib.action_spec.html">actionlib.action_spec</a>
+	</li>
+
+</ul>
+
+
+
+<!-- File list -->
+
+
+
+
+
+
+</div><!-- id="navigation" -->
+
+<div id="content">
+
+<h1>Module <code>actionlib</code></h1>
+
+<p>Actionlib implementation for Lua. This module and its sub-modules provide tools to make use of actionlib from within Lua.</p>
+
+
+<p>Copyright&copy; Tim Niemueller, Carnegie Mellon University, Intel Research Pittsburgh</p>
+
+
+<p><small><b>Release:</b> Released under BSD license</small></p>
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#action_client">action_client</a>&nbsp;(name, type, flags)</td>
+	<td class="summary">Create a new action client.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#action_server">action_server</a>&nbsp;(name, type, goal_cb, spin_cb, cancel_cb)</td>
+	<td class="summary">Create a new action server.</td>
+	</tr>
+
+</table>
+
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="action_client"></a><strong>action_client</strong>&nbsp;(name, type, flags)</dt>
+<dd>
+Create a new action client. This is a convenience method for ActionClient:new(). Since no registration is performed it is ok to use the constructor directly.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: name of the action client
+	</li>
+	
+	<li>
+	  type: type of the action (i.e. the package-prefixed action file)
+	</li>
+	
+	<li>
+	  flags: Optional table of flags, passed as named arguments exactly as in the table
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="action_server"></a><strong>action_server</strong>&nbsp;(name, type, goal_cb, spin_cb, cancel_cb)</dt>
+<dd>
+Create a new action server. This is a convenience method for ActionServer:new(). Since no registration is performed it is ok to use the constructor directly.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: name of the action server
+	</li>
+	
+	<li>
+	  type: type of the action (i.e. the package-prefixed action file)
+	</li>
+	
+	<li>
+	  goal_cb: goal callback
+	</li>
+	
+	<li>
+	  spin_cb: spin callback
+	</li>
+	
+	<li>
+	  cancel_cb: cancel callback (optional)
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>
