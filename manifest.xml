@@ -6,6 +6,9 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/actionlib_lua</url>
+  <export>
+    <doxymaker external="http://timn.github.com/ros-actionlib_lua/"/>
+  </export>
   <depend package="roslua"/>
   <depend package="actionlib_msgs"/>
 </package>
