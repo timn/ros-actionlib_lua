@@ -1,0 +1,22 @@
+#!/usr/bin/lua
+----------------------------------------------------------------------------
+--  actionspec - Action specification print script
+--
+--  Created: Wed Jan 19 22:54:56 2011
+--  Copyright  2010-2011  Tim Niemueller [www.niemueller.de]
+--
+----------------------------------------------------------------------------
+
+-- Licensed under BSD license
+
+require("roslua")
+require("actionlib")
+
+if #arg ~= 1 then
+   print("Usage: " .. arg[0] .. " package/Action\n")
+   return -1
+end
+
+local actionspec = actionlib.get_actionspec(arg[1])
+actionspec:print()
+
