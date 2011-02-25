@@ -156,7 +156,8 @@ function ServerGoalHandle:cancel(result, text)
 end
 
 --- Accept this goal.
-function ServerGoalHandle:accept()
+function ServerGoalHandle:accept(text)
+   self.text = text or self.text or ""
    if self.state == self.PENDING then
       self.state = self.ACTIVE
    elseif self.state == self.RECALLING then
@@ -165,7 +166,8 @@ function ServerGoalHandle:accept()
 end
 
 --- Reject this goal.
-function ServerGoalHandle:reject()
+function ServerGoalHandle:reject(text)
+   self.text = text or self.text or ""
    assert(self.state == self.PENDING, "Only pending goals can be rejected")
    self.state = self.REJECTED
 end
