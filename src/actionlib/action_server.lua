@@ -88,6 +88,7 @@ function ServerGoalHandle:set_state(state, text)
    self.last_state = self.state
    self.state = state
    self.text  = text or ""
+   self:update_expiration()
 end
 
 --- Check if the status has changed.
