@@ -413,6 +413,7 @@ function ActionClient:send_goal(goal, listener)
    if listener then
       handle:add_listener(listener)
    end
+   self.result = nil
    local actgoal = self.actspec.act_goal_spec:instantiate()
    actgoal.values.header.stamp = roslua.Time.now()
    actgoal.values.goal_id = self.goalidspec:instantiate()
