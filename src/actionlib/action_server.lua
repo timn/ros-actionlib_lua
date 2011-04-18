@@ -146,13 +146,15 @@ function ServerGoalHandle:cancel(result, text)
    assert(self.server.actspec.result_spec:is_instance(result),
 	  "Result is not an instance of " .. self.server.actspec.result_spec.type)
 
-   self.text  = text or self.text or ""
-   if self.state == self.PENDING or self.state == self.RECALLING then
-      self.state = self.RECALLED
-   elseif self.state == self.ACTIVE or self.state == self.PENDING then
-      self.state = self.PREEMPTED
+   if not self:is_terminal() then
+      self.text  = text or self.text or ""
+      if self.state == self.PENDING or self.state == self.RECALLING then
+	 self.state = self.RECALLED
+      elseif self.state == self.ACTIVE or self.state == self.PENDING then
+	 self.state = self.PREEMPTED
+      end
+      self.server:publish_result(self, result)
    end
-   self.server:publish_result(self, result)
 end
 
 --- Accept this goal.
@@ -275,8 +277,8 @@ function ActionServer:process_cancel(message)
    if message.values.id ~= "" then
       -- cancel specific goal
       local goal_id = message.values.id
-      print_debug("Cancel specific goal %s", goal_id)
-      if self.goals[goal_id] then
+      if self.goals[goal_id] and not self.goals[goal_id]:is_terminal() then
+	 print_debug("Cancel specific goal %s", goal_id)
 	 if self.cancel_cb then
 	    self.cancel_cb(self.goals[goal_id], self)
 	 end
