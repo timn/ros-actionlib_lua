@@ -4,8 +4,10 @@
 --
 --  Created: Fri Aug 06 11:41:07 2010 (at Intel Research, Pittsburgh)
 --  License: BSD, cf. LICENSE file of roslua
---  Copyright  2010  Tim Niemueller [www.niemueller.de]
---
+--  Copyright  2010-2011  Tim Niemueller [www.niemueller.de]
+--             2010-2011  Carnegie Mellon University
+--             2010-2011  Intel Labs Pittsburgh
+--             2011       SRI International
 ----------------------------------------------------------------------------
 
 --- Action client.
@@ -22,7 +24,8 @@
 -- current state. Additionally for a goal one or more listeners can be
 -- registered to get notified if the state changes or feedback or result
 -- messages are received.
--- @copyright Tim Niemueller, Carnegie Mellon University, Intel Research Pittsburgh
+-- @copyright Tim Niemueller, Carnegie Mellon University,
+-- Intel Research Pittsburgh, SRI International
 -- @release Released under BSD license
 module("actionlib.action_client", package.seeall)
 
@@ -356,11 +359,14 @@ function ActionClient:has_server()
    -- we just want any publisher, assuming that in useful scenarios there
    -- is only one. Oh my, not the double writer problem, again...
    for uri, p in pairs(self.sub_status.publishers) do
-      if p.connection then
-	 local callerid = p.connection.header.callerid
-	 if self.pub_goal.subscribers[callerid] then
-	    -- We got a subscriber with the matching caller id
-	    return true
+      if p.state == roslua.Subscriber.PUBSTATE_COMMUNICATING then
+	 for _, s in ipairs(self.pub_goal.subscribers) do
+	    if s.state == roslua.Publisher.SUBSTATE_COMMUNICATING and
+	       s.callerid == p.callerid
+	    then
+	       -- We got a subscriber with the matching caller id
+	       return true
+	    end
 	 end
       end
    end
@@ -376,7 +382,7 @@ function ActionClient:wait_for_server()
    while not self:has_server() do
       -- keep spinning...
       assert(not roslua.quit, "Aborted while waiting for server")
-      roslua.spin(0.05)
+      roslua.spin()
    end
 end
 
