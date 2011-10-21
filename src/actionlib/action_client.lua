@@ -80,9 +80,11 @@ end
 --- Set the state of the state machine.
 -- To be used only internally.
 -- @param state new state
-function ClientGoalHandle:set_state(state)
+-- @parma text informative text
+function ClientGoalHandle:set_state(state, text)
    self.last_state = self.state
    self.state = state
+   self.status_text = text
    if self.client.debug and self.last_state ~= self.state then
       printf("Goal (%s %s) state change %s -> %s", self.client.name, self.goal_id,
 	     self.STATE_TO_STRING[self.last_state], self.STATE_TO_STRING[self.state])
@@ -92,32 +94,33 @@ function ClientGoalHandle:set_state(state)
 end
 
 --- Update the status.
--- @param One of the GoalStatus constants
-function ClientGoalHandle:update_status(status)
+-- @param status One of the GoalStatus constants
+-- @param text informative text
+function ClientGoalHandle:update_status(status, text)
    if status == self.goalstatspec.constants.PENDING.value then
-      return self:set_state(self.PENDING)
+      return self:set_state(self.PENDING, text)
    elseif status == self.goalstatspec.constants.ACTIVE.value then
       if not self:terminal() then
-	 return self:set_state(self.ACTIVE)
+	 return self:set_state(self.ACTIVE, text)
       end
    elseif status == self.goalstatspec.constants.SUCCEEDED.value then
       if self.result == nil then -- result can come in faster than status
-	 return self:set_state(self.WAIT_RESULT)
+	 return self:set_state(self.WAIT_RESULT, text)
       else
-	 return self:set_state(self.SUCCEEDED)
+	 return self:set_state(self.SUCCEEDED, text)
       end
    elseif status == self.goalstatspec.constants.ABORTED.value then
-      return self:set_state(self.ABORTED)
+      return self:set_state(self.ABORTED, text)
    elseif status == self.goalstatspec.constants.REJECTED.value then
-      return self:set_state(self.REJECTED)
+      return self:set_state(self.REJECTED, text)
    elseif status == self.goalstatspec.constants.RECALLED.value then
-      return self:set_state(self.RECALLED)
+      return self:set_state(self.RECALLED, text)
    elseif status == self.goalstatspec.constants.PREEMPTED.value then
-      return self:set_state(self.PREEMPTED)
+      return self:set_state(self.PREEMPTED, text)
    elseif status == self.goalstatspec.constants.PREEMPTING.value then
-      return self:set_state(self.PREEMPTING)
+      return self:set_state(self.PREEMPTING, text)
    elseif status == self.goalstatspec.constants.RECALLING.value then
-      return self:set_state(self.RECALLING)
+      return self:set_state(self.RECALLING, text)
    end
 end
 
@@ -228,7 +231,7 @@ function ClientGoalHandle:cancel()
 	 m.values.id = self.goal_id
 	 self.client.pub_cancel:publish(m)
 	 self.last_state = self.state
-	 self:set_state(self.WAIT_CANCEL_ACK)
+	 self:set_state(self.WAIT_CANCEL_ACK, "Cancelled")
       end
    else
       print_warn("ActionClient[%s::%s] cancelling of goal %s requested, but cancelling"..
@@ -323,9 +326,10 @@ function ActionClient:process_status(message)
    --printf("Received %d stati", #message.values.status_list)
    for _, g in ipairs(message.values.status_list) do
       local status = g.values.status
+      local text   = g.values.text
       local goal_id = g.values.goal_id.values.id
       if self.goals[goal_id] then
-	 self.goals[goal_id]:update_status(status)
+	 self.goals[goal_id]:update_status(status, text)
 	 self.goals[goal_id]:notify_listeners()
       end
    end
