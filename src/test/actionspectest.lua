@@ -12,7 +12,7 @@
 require("roslua")
 require("actionlib")
 
-roslua.init_node{master_uri=os.getenv("ROS_MASTER_URI"), node_name="actionspectest"}
+roslua.init_node{node_name="actionspectest"}
 
 print()
 print("Action spec tests")
