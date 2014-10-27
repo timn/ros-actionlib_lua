@@ -233,8 +233,27 @@ function ClientGoalHandle:cancel()
 	 self.last_state = self.state
 	 self:set_state(self.WAIT_CANCEL_ACK, "Cancelled")
       end
+
+   elseif self.client.delayed_cancel then
+      print_info("ActionClient[%s::%s] *delayed* of goal %s requested",
+		 self.client.name, self.client.type, self.goal_id)
+      self.client.pub_cancel = roslua.publisher(self.client.name .. "/cancel", self.client.goalidspec)
+      if self.client.pub_cancel:wait_for_subscriber(10.) then
+	 print_info("ActionClient[%s::%s] action server connected, cancelling goal %s",
+		    self.client.name, self.client.type, self.goal_id)
+	 local time = time or roslua.Time.now()
+	 local m = self.client.goalidspec:instantiate()
+	 m.values.stamp = time
+	 self.client.pub_cancel:publish(m)
+	 self.last_state = self.state
+	 self:set_state(self.WAIT_CANCEL_ACK, "Cancelled")
+      else
+	 print_warn("ActionClient[%s::%s] cancelling goal %s requested, but no"..
+		    "action server connected to cancellation goal within 10 seconds",
+		    self.client.name, self.client.type, self.goal_id)
+      end
    else
-      print_warn("ActionClient[%s::%s] cancelling of goal %s requested, but cancelling"..
+      print_warn("ActionClient[%s::%s] cancelling of goal %s requested, but cancelling "..
 		 "disabled", self.client.name, self.client.type, self.goal_id)
    end
 end
@@ -283,7 +302,7 @@ function ActionClient:new(o)
       o.sub_feedback = roslua.subscriber(o.name .. "/feedback", o.actspec.act_feedback_spec)
    end
    o.pub_goal     = roslua.publisher(o.name .. "/goal", o.actspec.act_goal_spec)
-   if not o.no_cancel then
+   if not o.no_cancel and not o.delayed_cancel then
       o.pub_cancel   = roslua.publisher(o.name .. "/cancel", o.goalidspec)
    end
 
@@ -440,6 +459,19 @@ function ActionClient:cancel_all_goals()
    if self.pub_cancel then
       local m = self.goalidspec:instantiate()
       self.pub_cancel:publish(m)
+   elseif self.delayed_cancel then
+      print_info("ActionClient[%s::%s] *delayed* of all goals requested",
+		 self.client.name, self.client.type)
+      self.pub_cancel = roslua.publisher(self.name .. "/cancel", self.goalidspec)
+      if self.pub_cancel:wait_for_subscriber(10.) then
+	 local m = self.goalidspec:instantiate()
+	 self.pub_cancel:publish(m)
+      else
+	 print_warn("ActionClient[%s::%s] cancelling of all goals requested, but no"..
+		    "action server connected to cancellation goal within 10 seconds",
+		    self.client.name, self.client.type)
+
+      end
    else
       print_warn("ActionClient[%s::%s] cancelling of all goals requested, "..
 		 "but cancelling disabled", self.name, self.type)
@@ -454,6 +486,22 @@ function ActionClient:cancel_goals_before(time)
       local m = self.goalidspec:instantiate()
       m.values.stamp = time
       self.pub_cancel:publish(m)
+
+   elseif self.delayed_cancel then
+      print_info("ActionClient[%s::%s] *delayed* cancelling of goals before %s requested",
+		 self.name, self.type, tostring(time))
+      self.pub_cancel = roslua.publisher(self.name .. "/cancel", self.goalidspec)
+      if self.pub_cancel:wait_for_subscriber(10.) then
+	 local time = time or roslua.Time.now()
+	 local m = self.goalidspec:instantiate()
+	 m.values.stamp = time
+	 self.pub_cancel:publish(m)
+      else
+	 print_warn("ActionClient[%s::%s] cancelling goals before %s requested, but no"..
+		    "action server connected to cancellation goal within 10 seconds",
+		    self.name, self.type, tostring(time))
+      end
+
    else
       print_warn("ActionClient[%s::%s] cancelling of goals before %s requested, "..
 		 "but cancelling disabled", self.name, self.type, tostring(time))
